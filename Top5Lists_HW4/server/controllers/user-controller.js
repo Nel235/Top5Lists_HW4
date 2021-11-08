@@ -3,16 +3,26 @@ const User = require('../models/user-model')
 const bcrypt = require('bcryptjs')
 
 getLoggedIn = async (req, res) => {
+    console.log(req.userId)
     auth.verify(req, res, async function () {
+        console.log(req.userId)
         const loggedInUser = await User.findOne({ _id: req.userId });
-        return res.status(200).json({
-            loggedIn: true,
-            user: {
-                firstName: loggedInUser.firstName,
-                lastName: loggedInUser.lastName,
-                email: loggedInUser.email
-            }
-        }).send();
+        if (loggedInUser){
+            return res.status(200).json({
+                loggedIn: true,
+                user: {
+                    firstName: loggedInUser.firstName,
+                    lastName: loggedInUser.lastName,
+                    email: loggedInUser.email
+                }
+            }).send();
+        }
+        else{
+            return res.status(200).json({
+                loggedIn: false,
+                user: null
+            }).send();
+        }
     })
 }
 
@@ -78,7 +88,76 @@ registerUser = async (req, res) => {
     }
 }
 
+loginUser = async (req, res) => {
+    try {
+        const { email, password} = req.body;
+        if (!email || !password) {
+            return res
+                .status(400)
+                .json({ errorMessage: "Please enter all required fields." });
+        }
+        if (password.length < 8) {
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "Please enter a valid password."
+                });
+        }
+        const existingUser = await User.findOne({ email: email });
+
+        const passCompare = await bcrypt.compare(password, existingUser.passwordHash)
+
+        if (existingUser && passCompare) {
+            
+            // LOGIN THE USER
+            const token = auth.signToken(existingUser);
+
+            await res.cookie("token", token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "none"
+            }).status(200).json({
+                success: true,
+                user: {
+                    firstName: existingUser.firstName,
+                    lastName: existingUser.lastName,
+                    email: existingUser.email
+                }
+            }).send();
+            return res
+                .status(200)
+                .json({
+                    success: true
+                })
+        }
+        else {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "The email/password combination you have entered is incorrect."
+                })
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
+logoutUser = async (req, res) => {
+    try{
+        return res.status(200).json({
+            success: true
+        }).send();
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
 module.exports = {
     getLoggedIn,
-    registerUser
+    registerUser,
+    loginUser,
+    logoutUser
 }
