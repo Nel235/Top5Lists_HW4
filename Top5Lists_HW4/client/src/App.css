@@ -310,7 +310,6 @@ input {
   border-width: 5px;
   border-radius: 10px;
   border-style: groove;
-  z-index: 1080;
 }
 
 .modal-dialog > * {
