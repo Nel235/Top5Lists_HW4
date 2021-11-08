@@ -27,7 +27,10 @@ export default function LoginScreen() {
     };
 
     return (
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxWidth="xs" sx={{
+                marginRight: 0
+            }}>
+                <img src="https://media.self.com/photos/5b6b0b0cbb7f036f7f5cbcfa/4:3/w_2560%2Cc_limit/apples.jpg" alt="" id="apple"/>
                 <CssBaseline />
                 <Box
                     sx={{

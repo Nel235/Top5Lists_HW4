@@ -38,6 +38,14 @@ body {
   left: 0%;
 }
 
+#apple {
+  position: absolute;
+  width: 60%;
+  height: 90%;
+  top: 64px;
+  right: 40%;
+}
+
 #top5-banner {
   position: absolute;
   left: 0%;
