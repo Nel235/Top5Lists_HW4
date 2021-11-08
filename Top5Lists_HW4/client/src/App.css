@@ -297,14 +297,20 @@ input {
 
 .modal-dialog {
   position: relative;
-  max-width: 800px;
-  max-height: 80vh;
+  max-width: 400px;
+  max-height: 40vh;
+  margin-left: 35%;
+  margin-top: 5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(--swatch-complement);
   overflow: auto;
   cursor: default;
   border-width: 5px;
   border-radius: 10px;
   border-style: groove;
+  z-index: 1080;
 }
 
 .modal-dialog > * {

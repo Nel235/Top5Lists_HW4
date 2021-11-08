@@ -109,6 +109,13 @@ export default function AppBanner() {
                         >
                             { getAccountMenu(auth.loggedIn) }
                         </IconButton>
+                        <IconButton
+                            size="large"
+                            edge="end"
+                            color="inherit"
+                        >
+                            { auth.user.firstName[0] + auth.user.lastName[0] }
+                        </IconButton>
                     </Box>
                 </Toolbar>
             </AppBar>

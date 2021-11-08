@@ -2,6 +2,9 @@ import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
 import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
@@ -18,6 +21,7 @@ function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
+    const [open, setOpen] = useState(false);
     const { idNamePair } = props;
 
     function handleLoadList(event, id) {
@@ -43,6 +47,11 @@ function ListCard(props) {
     async function handleDeleteList(event, id) {
         event.stopPropagation();
         store.markListForDeletion(id);
+        setOpen(true);
+    }
+
+    async function handleClose(event) {
+        setOpen(false);
     }
 
     function handleKeyPress(event) {
@@ -84,6 +93,23 @@ function ListCard(props) {
                         <DeleteIcon style={{fontSize:'48pt'}} />
                     </IconButton>
                 </Box>
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                    className="modal-dialog"
+                    data-backdrop="false"
+                    >
+                    <Box> 
+                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                        Text in a modal
+                        </Typography>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+                        </Typography>
+                    </Box>
+                </Modal>
         </ListItem>
 
     if (editActive) {
@@ -104,6 +130,25 @@ function ListCard(props) {
                 InputLabelProps={{style: {fontSize: 24}}}
                 autoFocus
             />
+    }
+    else if(open){
+        cardElement=<Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        className="modal.is-visible"
+        data-backdrop="false"
+        >
+        <Box> 
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+            Text in a modal
+            </Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+            </Typography>
+        </Box>
+    </Modal>
     }
     return (
         cardElement
