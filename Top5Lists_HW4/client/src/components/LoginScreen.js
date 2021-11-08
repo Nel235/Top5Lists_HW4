@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import AuthContext from '../auth'
 import Copyright from './Copyright'
 import Avatar from '@mui/material/Avatar';
@@ -16,6 +16,19 @@ import { GlobalStoreContext } from '../store'
 export default function LoginScreen() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext)
+    const [open, setOpen] = useState(false);
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+      };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -24,12 +37,31 @@ export default function LoginScreen() {
             email: formData.get('email'),
             password: formData.get('password')
         }, store);
+        if (!auth.user) {
+            setOpen(true);
+        }
     };
 
     return (
             <Container component="main" maxWidth="xs" sx={{
                 marginRight: 0
             }}>
+                <Modal
+                open={open}
+                onClose={setOpen(false)}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                >
+                    <Box sx={style}> 
+                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                        Error!
+                        </Typography>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        Your username/password combination was incorrect, please try again.
+                        </Typography>
+                        <Button id="list-card-button" onClick={setOpen(false)}>OK</Button>
+                    </Box>
+                </Modal>
                 <img src="https://media.self.com/photos/5b6b0b0cbb7f036f7f5cbcfa/4:3/w_2560%2Cc_limit/apples.jpg" alt="" id="apple"/>
                 <CssBaseline />
                 <Box

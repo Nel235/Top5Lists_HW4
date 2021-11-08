@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import Top5Item from './Top5Item.js'
 import List from '@mui/material/List';
+import AuthContext from '../auth';
 import { Typography } from '@mui/material'
 import { GlobalStoreContext } from '../store/index.js'
 /*
@@ -11,9 +12,10 @@ import { GlobalStoreContext } from '../store/index.js'
 */
 function WorkspaceScreen() {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
 
     let editItems = "";
-    if (store.currentList) {
+    if (store.currentList&&auth.user&&auth.user.email==store.currentList.ownerEmail) {
         editItems = 
             <List id="edit-items" sx={{ width: '100%', bgcolor: 'background.paper' }}>
                 {

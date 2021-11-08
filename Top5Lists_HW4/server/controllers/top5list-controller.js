@@ -53,6 +53,7 @@ updateTop5List = async (req, res) => {
 
         top5List.name = body.name
         top5List.items = body.items
+        top5List.ownerEmail = body.ownerEmail
         top5List
             .save()
             .then(() => {
@@ -128,7 +129,9 @@ getTop5ListPairs = async (req, res) => {
                     _id: list._id,
                     name: list.name
                 };
-                pairs.push(pair);
+                console.log(req.params.id + "" + list.ownerEmail)
+                if (req.params.id == list.ownerEmail)
+                    pairs.push(pair);
             }
             return res.status(200).json({ success: true, idNamePairs: pairs })
         }
