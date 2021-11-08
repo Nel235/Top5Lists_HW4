@@ -31,6 +31,11 @@ export default function AppBanner() {
         auth.logoutUser();
     }
 
+    const initials = () => {
+        if (auth.loggedIn)
+            return auth.user.firstName[0] + auth.user.lastName[0];
+    }
+
     const menuId = 'primary-search-account-menu';
     const loggedOutMenu = (
         <Menu
@@ -71,10 +76,22 @@ export default function AppBanner() {
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>        
 
+    const loggedInIcon =
+            
+        <IconButton
+            size="large"
+            edge="end"
+            color="inherit"
+        >
+            { initials() }
+        </IconButton>
+
     let editToolbar = "";
+    let userIcon =""
     let menu = loggedOutMenu;
     if (auth.loggedIn) {
         menu = loggedInMenu;
+        userIcon = loggedInIcon
         if (store.currentList) {
             editToolbar = <EditToolbar />;
         }
@@ -109,13 +126,8 @@ export default function AppBanner() {
                         >
                             { getAccountMenu(auth.loggedIn) }
                         </IconButton>
-                        <IconButton
-                            size="large"
-                            edge="end"
-                            color="inherit"
-                        >
-                            { auth.user.firstName[0] + auth.user.lastName[0] }
-                        </IconButton>
+                        <Box sx={{ flexGrow: 1 }}>{userIcon}
+                        </Box>
                     </Box>
                 </Toolbar>
             </AppBar>

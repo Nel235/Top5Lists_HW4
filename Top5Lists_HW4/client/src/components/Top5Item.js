@@ -2,6 +2,7 @@ import { React, useContext, useState } from "react";
 import { GlobalStoreContext } from '../store'
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
@@ -14,7 +15,32 @@ import EditIcon from '@mui/icons-material/Edit';
 function Top5Item(props) {
     const { store } = useContext(GlobalStoreContext);
     const [editActive, setEditActive] = useState(false);
+    const [text, setText] = useState("");
     const [draggedTo, setDraggedTo] = useState(0);
+
+    function handleClick(event) {
+        event.stopPropagation();
+        toggleEdit();
+    }
+
+    function toggleEdit() {
+        let newActive = !editActive;
+        if (newActive) {
+            store.setIsItemEditActive();
+        }
+        setEditActive(newActive);
+    }
+
+    function handleKeyPress(event) {
+        if (event.code === "Enter") {
+            let id = event.target.id.substring("item-".length);
+            store.addUpdateItemTransaction(id-1, text);
+            toggleEdit();
+        }
+    }
+    function handleUpdateText(event) {
+        setText(event.target.value);
+    }
 
     function handleDragStart(event, targetId) {
         event.dataTransfer.setData("item", targetId);
@@ -55,6 +81,27 @@ function Top5Item(props) {
         itemClass = "top5-item-dragged-to";
     }
 
+    if (editActive) {
+        let cardElement =
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                label="Top 5 Item Name"
+                id={'item-' + (index+1)}
+                name="name"
+                autoComplete="Top 5 Item Name"
+                className='list-card'
+                onKeyPress={handleKeyPress}
+                onChange={handleUpdateText}
+                defaultValue={props.text}
+                inputProps={{style: {fontSize: 48}}}
+                InputLabelProps={{style: {fontSize: 24}}}
+                autoFocus
+            />
+        return cardElement
+    }
+
     return (
             <ListItem
                 id={'item-' + (index+1)}
@@ -84,7 +131,9 @@ function Top5Item(props) {
             >
             <Box sx={{ p: 1 }}>
                 <IconButton aria-label='edit'>
-                    <EditIcon style={{fontSize:'48pt'}}  />
+                    <EditIcon style={{fontSize:'48pt'}}  onClick={(event) => {
+                        handleClick(event)
+                    }}/>
                 </IconButton>
             </Box>
                 <Box sx={{ p: 1, flexGrow: 1 }}>{props.text}</Box>
