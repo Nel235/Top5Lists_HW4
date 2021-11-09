@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import AuthContext from '../auth'
 import Copyright from './Copyright'
+import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -10,6 +11,7 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { GlobalStoreContext } from '../store'
 
@@ -28,8 +30,12 @@ export default function LoginScreen() {
         border: '2px solid #000',
         boxShadow: 24,
         p: 4,
+        alignItems: "center"
       };
-
+    function handleOpen(event) {
+        event.stopPropagation();
+        setOpen(false);
+    }
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
@@ -37,7 +43,7 @@ export default function LoginScreen() {
             email: formData.get('email'),
             password: formData.get('password')
         }, store);
-        if (!auth.user) {
+        if (!open&&!auth.user) {
             setOpen(true);
         }
     };
@@ -48,18 +54,12 @@ export default function LoginScreen() {
             }}>
                 <Modal
                 open={open}
-                onClose={setOpen(false)}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
                 >
                     <Box sx={style}> 
-                        <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Error!
-                        </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        Your username/password combination was incorrect, please try again.
-                        </Typography>
-                        <Button id="list-card-button" onClick={setOpen(false)}>OK</Button>
+                        <Alert severity="warning">Your username/password combination was incorrect, please try again.</Alert>
+                        <Button id="list-card-button" onClick={handleOpen} >OK</Button>
                     </Box>
                 </Modal>
                 <img src="https://media.self.com/photos/5b6b0b0cbb7f036f7f5cbcfa/4:3/w_2560%2Cc_limit/apples.jpg" alt="" id="apple"/>

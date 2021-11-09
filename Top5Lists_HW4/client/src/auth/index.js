@@ -105,6 +105,7 @@ function AuthContextProvider(props) {
             history.push("/");
             store.loadIdNamePairs();
         }
+        
     }
 
     return (
