@@ -15,7 +15,8 @@ import Modal from '@mui/material/Modal';
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
     const [open, setOpen] = useState(false);
-    const [markedList, setMarkedList] = useState("")
+    const [editing, setEditing] = useState(false);
+    const [markedList, setMarkedList] = useState("");
 
     const style = {
         position: 'absolute',
@@ -52,6 +53,12 @@ const HomeScreen = () => {
     function openModal() {
         setOpen(true);
     }
+    if(!editing&&(store.isListNameEditActive||store.isItemEditActive)){
+        setEditing(true);
+    }
+    if(editing&&!(store.isListNameEditActive||store.isItemEditActive)){
+        setEditing(false);
+    }
     let listCard = "";
     if(store.listMarkedForDeletion && !open){
         setMarkedList(store.listMarkedForDeletion.name);
@@ -79,6 +86,7 @@ const HomeScreen = () => {
                 aria-label="add"
                 id="add-list-button"
                 onClick={handleCreateNewList}
+                disabled={editing}
             >
                 <AddIcon />
             </Fab>

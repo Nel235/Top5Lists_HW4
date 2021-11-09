@@ -16,6 +16,7 @@ export default function AppBanner() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [editing, setEditing] = useState(false);
     const isMenuOpen = Boolean(anchorEl);
 
     const handleProfileMenuOpen = (event) => {
@@ -34,6 +35,13 @@ export default function AppBanner() {
     const initials = () => {
         if (auth.loggedIn)
             return auth.user.firstName[0] + auth.user.lastName[0];
+    }
+
+    if(!editing&&(store.isListNameEditActive||store.isItemEditActive)){
+        setEditing(true);
+    }
+    if(editing&&!(store.isListNameEditActive||store.isItemEditActive)){
+        setEditing(false);
     }
 
     const menuId = 'primary-search-account-menu';
@@ -123,6 +131,7 @@ export default function AppBanner() {
                             aria-haspopup="true"
                             onClick={handleProfileMenuOpen}
                             color="inherit"
+                            disabled={editing}
                         >
                             { getAccountMenu(auth.loggedIn) }
                         </IconButton>
