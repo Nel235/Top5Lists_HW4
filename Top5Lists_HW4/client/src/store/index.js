@@ -207,7 +207,7 @@ function GlobalStoreContextProvider(props) {
         let newListName = "Untitled" + store.newListCounter;
         let payload = {
             name: newListName,
-            items: ["?", "?", "?", "?", "?"],
+            items: ["", "", "", "", ""],
             ownerEmail: auth.user.email
         };
         const response = await api.createTop5List(payload);
@@ -299,14 +299,16 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.addMoveItemTransaction = function (start, end) {
+        if(start != end){
         let transaction = new MoveItem_Transaction(store, start, end);
-        tps.addTransaction(transaction);
+        tps.addTransaction(transaction);}
     }
 
     store.addUpdateItemTransaction = function (index, newText) {
         let oldText = store.currentList.items[index];
+        if(oldText!=newText){
         let transaction = new UpdateItem_Transaction(store, index, oldText, newText);
-        tps.addTransaction(transaction);
+        tps.addTransaction(transaction);}
     }
 
     store.moveItem = function (start, end) {

@@ -26,13 +26,13 @@ function EditToolbar() {
     let editStatus = false;
     let hasUndo = false;
     let hasRedo = false;
-    if (store.isListNameEditActive) {
+    if (store.isListNameEditActive||store.isItemEditActive) {
         editStatus = true;
-    }  
-    if (store.hasTransactionToUndo){
+    }
+    if (store.canUndo()){
         hasUndo = true;
     }
-    if (store.hasTransactionToRedo){
+    if (store.canRedo()){
         hasRedo = true;
     }
     return (
