@@ -71,8 +71,11 @@ function ListCard(props) {
             }
             }
             style={{
-                fontSize: '48pt',
-                width: '100%'
+                fontSize: '36pt',
+                width: '100%',
+                height: '15%',
+                borderRadius: '20px',
+                backgroundColor: 'lightBlue'
             }}
         >
                 <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>

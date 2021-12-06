@@ -3,6 +3,10 @@ import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import { Fab, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
+import HomeIcon from '@mui/icons-material/Home';
+import PeopleIcon from '@mui/icons-material/People';
+import PersonIcon from '@mui/icons-material/Person';
+import FunctionIcon from '@mui/icons-material/Functions';
 import List from '@mui/material/List';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -66,7 +70,7 @@ const HomeScreen = () => {
     }
     if (store) {
         listCard = 
-            <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
+            <List sx={{ width: '90%', left: '5%', fillOpacity: '1', zIndex: '-.05' }}>
             {
                 store.idNamePairs.map((pair) => (
                     <ListCard
@@ -90,8 +94,40 @@ const HomeScreen = () => {
             >
                 <AddIcon />
             </Fab>
-                <Typography variant="h2">Your Lists</Typography>
+                <Typography variant="h3">Your Lists</Typography>
             </div>
+
+            <div id="home-screen-tabs">
+                <Fab 
+                    color="secondary" 
+                    aria-label="home"
+                    id="add-list-button"
+                >
+                    <HomeIcon />
+                </Fab>
+                <Fab 
+                    color="secondary" 
+                    aria-label="people"
+                    id="add-list-button"
+                >
+                    <PeopleIcon />
+                </Fab>
+                <Fab 
+                    color="secondary" 
+                    aria-label="person"
+                    id="add-list-button"
+                >
+                    <PersonIcon />
+                </Fab>
+                <Fab 
+                    color="secondary" 
+                    aria-label="community"
+                    id="add-list-button"
+                >
+                    <FunctionIcon />
+                </Fab>
+            </div>
+
             <div id="list-selector-list">
                 {
                     listCard
