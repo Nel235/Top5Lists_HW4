@@ -8,7 +8,10 @@ import Modal from '@mui/material/Modal';
 import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
+import DownIcon from '@mui/icons-material/KeyboardArrowDown';
+import UpIcon from '@mui/icons-material/KeyboardArrowUp';
 import DeleteIcon from '@mui/icons-material/Delete';
+import List from '@mui/material/List';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -19,28 +22,28 @@ import DeleteIcon from '@mui/icons-material/Delete';
 */
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
-    const [editActive, setEditActive] = useState(false);
-    const [text, setText] = useState("");
+    const [expandActive, setExpandActive] = useState(false);
+    const [list, setList] = useState([]);
     const { idNamePair } = props;
 
     function handleLoadList(event, id) {
         if (!event.target.disabled) {
             // CHANGE THE CURRENT LIST
-            store.setCurrentList(id);
+            store.setCurrentLists(id);
         }
     }
 
-    function handleToggleEdit(event) {
+   async function handleExpand(event, id) {
         event.stopPropagation();
-        toggleEdit();
+        setList(await store.setCurrentList(id));
+        toggleExpand();
     }
 
-    function toggleEdit() {
-        let newActive = !editActive;
-        if (newActive) {
-            store.setIsListNameEditActive();
-        }
-        setEditActive(newActive);
+    function toggleExpand() {
+        let newActive = !expandActive;
+        if (!newActive)
+            store.closeCurrentList();
+        setExpandActive(newActive);
     }
 
     async function handleDeleteList(event, id) {
@@ -48,69 +51,94 @@ function ListCard(props) {
         store.markListForDeletion(id);
     }
 
-    async function handleKeyPress(event) {
-        if (event.code === "Enter") {
-            let id = event.target.id.substring("list-".length);
-            store.changeListName(id, text);
-            store.closeCurrentList()
-            toggleEdit();
-        }
-    }
-    function handleUpdateText(event) {
-        setText(event.target.value);
-    }
-
     let cardElement =
         <ListItem
             id={idNamePair._id}
             key={idNamePair._id}
-            sx={{ marginTop: '15px', display: 'flex', p: 1 }}
-            button
-            onClick={(event) => {
-                handleLoadList(event, idNamePair._id)
-            }
-            }
+            sx={{ marginTop: '10px', display: 'flex', p: 1, minHeight: '72px' }}
             style={{
-                fontSize: '36pt',
+                fontSize: '16pt',
                 width: '100%',
                 height: '15%',
                 borderRadius: '20px',
                 backgroundColor: 'lightBlue'
             }}
         >
-                <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
+                <Box sx={{ p: 0 }}>{idNamePair.name}</Box>
                 <Box sx={{ p: 1 }}>
-                    <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                        <EditIcon style={{fontSize:'48pt'}} />
+                    <IconButton style={{position: 'absolute', left: '0%', bottom: '0%', fontSize: '12pt'}} onClick={(event) => {handleLoadList(event, idNamePair._id)}} aria-label='edit'>
+                        <EditIcon style={{fontSize:'12pt', float: 'left'}} />
+                        Edit
                     </IconButton>
                 </Box>
                 <Box sx={{ p: 1 }}>
-                    <IconButton onClick={(event) => {
+                    <IconButton style={{ right: '-5150%'}} disabled={store.currentList} onClick={(event) => {
                         handleDeleteList(event, idNamePair._id)
                     }} aria-label='delete'>
-                        <DeleteIcon style={{fontSize:'48pt'}} />
+                        <DeleteIcon style={{fontSize:'18pt', position: 'absolute', top: '-100%'}} />
+                    </IconButton>
+                </Box>
+                <Box sx={{ p: 1 }}>
+                    <IconButton style={{ right: '-4950%'}} disabled={store.currentList} onClick={(event) => {
+                        handleExpand(event, idNamePair._id)
+                    }} aria-label='expand'>
+                        <DownIcon style={{fontSize:'18pt', position: 'absolute', top: '110%'}} />
+                    </IconButton>
+                </Box>
+        </ListItem>
+    if (expandActive && store.currentList) {
+        cardElement =
+        <ListItem
+            id={idNamePair._id}
+            key={idNamePair._id}
+            sx={{ marginTop: '10px', display: 'flex', p: 1, minHeight: '384px' }}
+            style={{
+                fontSize: '16pt',
+                width: '100%',
+                height: '15%',
+                borderRadius: '20px',
+                backgroundColor: 'lightBlue'
+            }}
+        >
+                <Box sx={{ p: 0 , position: 'absolute', left: '1%', top: '5%' }}>{idNamePair.name}</Box>
+                <Box sx={{ p: 1 }}>
+                    <IconButton style={{position: 'absolute', left: '0%', bottom: '0%', fontSize: '12pt'}} onClick={(event) => {handleLoadList(event, idNamePair._id)}} aria-label='edit'>
+                        <EditIcon style={{fontSize:'12pt', float: 'left'}} />
+                        Edit
+                    </IconButton>
+                </Box>
+                <Box sx={{ p: 0 , position: 'absolute', left: '1%', top: '15%', color: 'black', backgroundColor:'lightGreen', height: '75%', width: '50%', borderRadius: '20px' }}>
+                    <div id="edit-numbering">
+                        <div className="item-number"><Typography variant="h4">1.</Typography></div>
+                        <div className="item-number"><Typography variant="h4">2.</Typography></div>
+                        <div className="item-number"><Typography variant="h4">3.</Typography></div>
+                        <div className="item-number"><Typography variant="h4">4.</Typography></div>
+                        <div className="item-number"><Typography variant="h4">5.</Typography></div>
+                    </div>
+                    <List id="edit-items" sx={{ p: 0, borderRadius: '20px', color: 'black', width: '100%', height: '20%', bgcolor: 'background.paper' }}>
+                        {
+                            list.map((item) => (
+                                <div className="item-number" ><Typography variant="h4" style={{width:'100%', align:'left'}}>{item}</Typography></div>
+                            ))
+                        }
+                    </List>;
+                </Box>
+                <Box sx={{ p: 1 }}>
+                    <IconButton style={{ right: '-5650%'}} onClick={(event) => {
+                        handleDeleteList(event, idNamePair._id)
+                    }} aria-label='delete'>
+                        <DeleteIcon style={{fontSize:'18pt', position: 'absolute', top: '-1050%'}} />
+                    </IconButton>
+                </Box>
+                <Box sx={{ p: 1 }}>
+                    <IconButton style={{ right: '-5450%'}} onClick={(event) => {
+                        handleExpand(event, idNamePair._id)
+                    }} aria-label='shrink'>
+                        <UpIcon style={{fontSize:'18pt', position: 'absolute', top: '1050%'}} />
                     </IconButton>
                 </Box>
         </ListItem>
 
-    if (editActive) {
-        cardElement =
-            <TextField
-                margin="normal"
-                required
-                fullWidth
-                id={"list-" + idNamePair._id}
-                label="Top 5 List Name"
-                name="name"
-                autoComplete="Top 5 List Name"
-                className='list-card'
-                onKeyPress={handleKeyPress}
-                onChange={handleUpdateText}
-                defaultValue={idNamePair.name}
-                inputProps={{style: {fontSize: 48}}}
-                InputLabelProps={{style: {fontSize: 24}}}
-                autoFocus
-            />
     }
     // else if(open){
     //     cardElement=<Modal

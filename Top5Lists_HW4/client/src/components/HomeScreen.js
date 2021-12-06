@@ -83,7 +83,7 @@ const HomeScreen = () => {
             </List>;
     }
     return (
-        <div id="top5-list-selector">
+        <div id="top5-list-selector" >
             <div id="list-selector-heading">
             <Fab 
                 color="primary" 
@@ -128,7 +128,7 @@ const HomeScreen = () => {
                 </Fab>
             </div>
 
-            <div id="list-selector-list">
+            <div id="list-selector-list" style={{height: '75%'}}>
                 {
                     listCard
                 }

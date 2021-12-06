@@ -251,9 +251,8 @@ body {
 .item-number {
   justify-content: center;
   width: 100%;
-  border: 1px 0px 1px 1px;
   border-color: black;
-  background-color: linen;
+  background-color: lightsteelblue;
   color: black;
 }
 

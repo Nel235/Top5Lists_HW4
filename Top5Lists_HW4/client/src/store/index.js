@@ -293,6 +293,23 @@ function GlobalStoreContextProvider(props) {
                     type: GlobalStoreActionType.SET_CURRENT_LIST,
                     payload: top5List
                 });
+                // history.push("/top5list/" + top5List._id);
+            }
+            return top5List.items;
+        }
+    }
+
+    store.setCurrentLists = async function (id) {
+        let response = await api.getTop5ListById(id);
+        if (response.data.success) {
+            let top5List = response.data.top5List;
+
+            response = await api.updateTop5ListById(top5List._id, top5List);
+            if (response.data.success) {
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: top5List
+                });
                 history.push("/top5list/" + top5List._id);
             }
         }
