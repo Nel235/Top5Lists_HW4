@@ -66,7 +66,7 @@ function ListCard(props) {
         >
                 <Box sx={{ p: 0 }}>{idNamePair.name}</Box>
                 <Box sx={{ p: 1 }}>
-                    <IconButton style={{position: 'absolute', left: '0%', bottom: '0%', fontSize: '12pt'}} onClick={(event) => {handleLoadList(event, idNamePair._id)}} aria-label='edit'>
+                    <IconButton disabled={store.currentList} style={{position: 'absolute', left: '0%', bottom: '0%', fontSize: '12pt'}} onClick={(event) => {handleLoadList(event, idNamePair._id)}} aria-label='edit'>
                         <EditIcon style={{fontSize:'12pt', float: 'left'}} />
                         Edit
                     </IconButton>
@@ -121,7 +121,7 @@ function ListCard(props) {
                                 <div className="item-number" ><Typography variant="h4" style={{width:'100%', align:'left'}}>{item}</Typography></div>
                             ))
                         }
-                    </List>;
+                    </List>
                 </Box>
                 <Box sx={{ p: 1 }}>
                     <IconButton style={{ right: '-5650%'}} onClick={(event) => {

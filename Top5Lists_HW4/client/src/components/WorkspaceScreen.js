@@ -2,7 +2,7 @@ import { useContext, useState } from 'react'
 import Top5Item from './Top5Item.js'
 import List from '@mui/material/List';
 import AuthContext from '../auth';
-import { Typography, TextField, Box, IconButton } from '@mui/material';
+import { Typography, TextField, Box, IconButton, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { GlobalStoreContext } from '../store/index.js'
 /*
@@ -15,17 +15,21 @@ function WorkspaceScreen() {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
-    const [text, setText] = useState("");
+    const [text, setText] = useState(store.currentList.name);
 
     function handleToggleEdit(event) {
         event.stopPropagation();
         toggleEdit();
     }
 
+    function handleClose(){
+        store.closeCurrentList();
+    }
+
     function toggleEdit() {
         let newActive = !editActive;
         if (newActive) {
-            store.setIsListNameEditActive();
+            store.setIsEditActive();
         }
         setEditActive(newActive);
     }
@@ -33,14 +37,15 @@ function WorkspaceScreen() {
     async function handleKeyPress(event) {
         if (event.code === "Enter") {
             let id = event.target.id.substring("list-".length);
-            store.changeListName(id, text);
-            store.closeCurrentList()
+            if(text !== "")
+                store.changeListName(id, text);
             toggleEdit();
         }
     }
 
     function handleUpdateText(event) {
         setText(event.target.value);
+        store.setCurrentList(store.currentList);
     }
 
     let editItems = "";
@@ -58,7 +63,19 @@ function WorkspaceScreen() {
                 }
             </List>;
     }
-    let cardElement = "";
+    let cardElement = 
+        <div width='100%' >
+            <Box sx={{ p: 0, fontSize: '48px', position: 'absolute', left: '10%' }}>{text}</Box>
+            <Box sx={{ p: 1 }}>
+                <IconButton disabled={store.IsEditActive} style={{position: 'absolute', left: '0%', top: '0%', fontSize: '24pt'}} onClick={(event) => {handleToggleEdit(event)}} aria-label='edit'>
+                    <EditIcon style={{fontSize:'12pt', float: 'left'}} />
+                    Edit
+                </IconButton>
+            </Box>
+            <Button onClick={handleClose} sx={{p: 0, fontSize:'24px', position:'absolute', color: 'black', width: '10%', left: '85%', backgroundColor: 'whitesmoke'}}>
+                Save
+            </Button>
+            </div>;
     if (editActive) {
         cardElement =
             <TextField
@@ -72,8 +89,8 @@ function WorkspaceScreen() {
                 className='list-card'
                 onKeyPress={handleKeyPress}
                 onChange={handleUpdateText}
-                defaultValue={store.currentList.name}
-                inputProps={{style: {fontSize: 48}}}
+                defaultValue={text}
+                inputProps={{style: {fontSize: 24}}}
                 InputLabelProps={{style: {fontSize: 24}}}
                 autoFocus
             />
@@ -81,15 +98,9 @@ function WorkspaceScreen() {
     
     return (
         <div id="top5-workspace">
-            cardElement
-            <Box sx={{ p: 0 }}>{store.currentList.name}</Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton style={{position: 'absolute', left: '0%', bottom: '0%', fontSize: '12pt'}} onClick={(event) => {handleToggleEdit(event)}} aria-label='edit'>
-                        <EditIcon style={{fontSize:'12pt', float: 'left'}} />
-                        Edit
-                    </IconButton>
-                </Box>
+            
             <div id="workspace-edit">
+                {cardElement}
                 <div id="edit-numbering">
                     <div className="item-number"><Typography variant="h3">1.</Typography></div>
                     <div className="item-number"><Typography variant="h3">2.</Typography></div>

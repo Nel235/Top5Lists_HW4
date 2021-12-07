@@ -54,6 +54,60 @@ updateTop5List = async (req, res) => {
         top5List.name = body.name
         top5List.items = body.items
         top5List.ownerEmail = body.ownerEmail
+        if(top5List.publishDate){
+            top5List.publishDate = body.publishDate
+            top5List.views = body.views
+            top5List.liked = body.liked
+            top5List.disliked = body.disliked
+            top5List.comments = body.comments
+        }
+        top5List
+            .save()
+            .then(() => {
+                console.log("SUCCESS!!!");
+                return res.status(200).json({
+                    success: true,
+                    id: top5List._id,
+                    message: 'Top 5 List updated!',
+                })
+            })
+            .catch(error => {
+                console.log("FAILURE: " + JSON.stringify(error));
+                return res.status(404).json({
+                    error,
+                    message: 'Top 5 List not updated!',
+                })
+            })
+    })
+}
+
+publishTop5List = async (req, res) => {
+    const body = req.body
+    console.log("updateTop5List: " + JSON.stringify(body));
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        })
+    }
+
+    Top5List.findOne({ _id: req.params.id }, (err, top5List) => {
+        console.log("top5List found: " + JSON.stringify(top5List));
+        if (err) {
+            return res.status(404).json({
+                err,
+                message: 'Top 5 List not found!',
+            })
+        }
+
+        top5List.name = body.name
+        top5List.items = body.items
+        top5List.ownerEmail = body.ownerEmail
+        top5List.publishDate = body.publishDate
+        top5List.views = 0
+        top5List.liked = []
+        top5List.disliked = []
+        top5List.comments = []
         top5List
             .save()
             .then(() => {
@@ -130,7 +184,7 @@ getTop5ListPairs = async (req, res) => {
                     name: list.name
                 };
                 console.log(req.params.id + "" + list.ownerEmail)
-                if (req.params.id == list.ownerEmail)
+                if (req.params.id == list.ownerEmail||list.datePublished)
                     pairs.push(pair);
             }
             return res.status(200).json({ success: true, idNamePairs: pairs })
@@ -141,6 +195,7 @@ getTop5ListPairs = async (req, res) => {
 module.exports = {
     createTop5List,
     updateTop5List,
+    publishTop5List,
     deleteTop5List,
     getTop5Lists,
     getTop5ListPairs,

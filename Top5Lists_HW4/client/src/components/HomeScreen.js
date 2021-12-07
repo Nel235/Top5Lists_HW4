@@ -21,6 +21,10 @@ const HomeScreen = () => {
     const [open, setOpen] = useState(false);
     const [editing, setEditing] = useState(false);
     const [markedList, setMarkedList] = useState("");
+    const [home, setHome] = useState(false);
+    const [people, setPeople] = useState(false);
+    const [person, setPerson] = useState(false);
+    const [community, setCommunity] = useState(false);
 
     const style = {
         position: 'absolute',
@@ -54,9 +58,52 @@ const HomeScreen = () => {
         setMarkedList("");
     }
 
+    function handleHome(event){
+        event.stopPropagation();
+        setHome(true);
+        setPeople(false);
+        setPerson(false);
+        setCommunity(false);
+    }
+    function handlePeople(event){
+        event.stopPropagation();
+        setHome(false);
+        setPeople(true);
+        setPerson(false);
+        setCommunity(false);
+    }
+    function handlePerson(event){
+        event.stopPropagation();
+        setHome(false);
+        setPeople(false);
+        setPerson(true);
+        setCommunity(false);
+    }
+    function handleCommunity(event){
+        event.stopPropagation();
+        setHome(false);
+        setPeople(false);
+        setPerson(false);
+        setCommunity(true);
+    }
+
     function openModal() {
         setOpen(true);
     }
+
+    let selectedHome = "secondary";
+    let selectedPerson = "secondary";
+    let selectedPeople = "secondary";
+    let selectedCommunity = "secondary";
+    if (home)
+        selectedHome = "primary";
+    if (person)
+        selectedPerson = "primary";
+    if(people)
+        selectedPeople = "primary";
+    if(community)
+        selectedCommunity = "primary";
+
     if(!editing&&(store.isListNameEditActive||store.isItemEditActive)){
         setEditing(true);
     }
@@ -99,30 +146,34 @@ const HomeScreen = () => {
 
             <div id="home-screen-tabs">
                 <Fab 
-                    color="secondary" 
+                    color={selectedHome}
                     aria-label="home"
                     id="add-list-button"
+                    onClick={handleHome}
                 >
                     <HomeIcon />
                 </Fab>
                 <Fab 
-                    color="secondary" 
+                    color={selectedPeople}
                     aria-label="people"
                     id="add-list-button"
+                    onClick={handlePeople}
                 >
                     <PeopleIcon />
                 </Fab>
                 <Fab 
-                    color="secondary" 
+                    color={selectedPerson}
                     aria-label="person"
                     id="add-list-button"
+                    onClick={handlePerson}
                 >
                     <PersonIcon />
                 </Fab>
                 <Fab 
-                    color="secondary" 
+                    color={selectedCommunity} 
                     aria-label="community"
                     id="add-list-button"
+                    onClick={handleCommunity}
                 >
                     <FunctionIcon />
                 </Fab>
