@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
-import { Fab, Typography } from '@mui/material'
+import { Fab, Typography, TextField } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
@@ -11,6 +11,7 @@ import List from '@mui/material/List';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
+import AuthContext from '../auth';
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -18,6 +19,7 @@ import Modal from '@mui/material/Modal';
 */
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     const [open, setOpen] = useState(false);
     const [editing, setEditing] = useState(false);
     const [markedList, setMarkedList] = useState("");
@@ -116,10 +118,24 @@ const HomeScreen = () => {
         openModal();
     }
     if (store) {
+        let ownPairs = [];
+        let otherPairs = [];
+        for( let pair of store.idNamePairs ){
+            if(pair['owner']==auth.user.email){
+                ownPairs.push(pair);
+            }
+            else
+                otherPairs.push(pair);
+        }
+        let pairs = [];
+        if (home)
+            pairs = ownPairs;
+        else if(person||people)
+            pairs = otherPairs;
         listCard = 
             <List sx={{ width: '90%', left: '5%', fillOpacity: '1', zIndex: '-.05' }}>
             {
-                store.idNamePairs.map((pair) => (
+                pairs.map((pair) => (
                     <ListCard
                         key={pair._id}
                         idNamePair={pair}

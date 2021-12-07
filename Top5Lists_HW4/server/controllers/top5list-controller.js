@@ -51,11 +51,13 @@ updateTop5List = async (req, res) => {
             })
         }
 
+        console.log("HERE------------------------------------------------------------");
+
         top5List.name = body.name
         top5List.items = body.items
         top5List.ownerEmail = body.ownerEmail
-        if(top5List.publishDate){
-            top5List.publishDate = body.publishDate
+        if(top5List.datePublished){
+            top5List.datePublished = body.datePublished
             top5List.views = body.views
             top5List.liked = body.liked
             top5List.disliked = body.disliked
@@ -93,6 +95,7 @@ publishTop5List = async (req, res) => {
 
     Top5List.findOne({ _id: req.params.id }, (err, top5List) => {
         console.log("top5List found: " + JSON.stringify(top5List));
+        console.log(err)
         if (err) {
             return res.status(404).json({
                 err,
@@ -103,11 +106,14 @@ publishTop5List = async (req, res) => {
         top5List.name = body.name
         top5List.items = body.items
         top5List.ownerEmail = body.ownerEmail
-        top5List.publishDate = body.publishDate
+        top5List.datePublished = new Date()
         top5List.views = 0
         top5List.liked = []
         top5List.disliked = []
         top5List.comments = []
+
+        
+
         top5List
             .save()
             .then(() => {
@@ -181,7 +187,9 @@ getTop5ListPairs = async (req, res) => {
                 let list = top5Lists[key];
                 let pair = {
                     _id: list._id,
-                    name: list.name
+                    name: list.name,
+                    published: list.datePublished,
+                    owner: list.ownerEmail
                 };
                 console.log(req.params.id + "" + list.ownerEmail)
                 if (req.params.id == list.ownerEmail||list.datePublished)

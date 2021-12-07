@@ -1,4 +1,5 @@
 import { useContext, useState } from 'react'
+import AuthContext from '../auth';
 import { GlobalStoreContext } from '../store'
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
@@ -22,6 +23,7 @@ import List from '@mui/material/List';
 */
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     const [expandActive, setExpandActive] = useState(false);
     const [list, setList] = useState([]);
     const { idNamePair } = props;
@@ -51,6 +53,40 @@ function ListCard(props) {
         store.markListForDeletion(id);
     }
 
+    let G = 
+        <Box sx={{ p: 1 }}>
+            <IconButton style={{ right: '-5650%'}} onClick={(event) => {
+                handleDeleteList(event, idNamePair._id)
+            }} aria-label='delete'>
+                <DeleteIcon style={{fontSize:'18pt', position: 'absolute', top: '-1050%'}} />
+            </IconButton>
+        </Box>
+
+    let H = 
+        <Box sx={{ p: 0 }}>
+            <IconButton style={{ width: '100%', alignSelf: 'flex-end' }} disabled={store.currentList} onClick={(event) => {
+                handleDeleteList(event, idNamePair._id)
+            }} aria-label='delete'>
+                <DeleteIcon style={{fontSize:'18pt', position: 'absolute', top: '-100%'}} />
+            </IconButton>
+        </Box>
+
+    let published = 
+        <Box sx={{ p: 0 }}>
+            <IconButton disabled={store.currentList} style={{ position: 'absolute', left: '0%', bottom: '0%', fontSize: '12pt'}} onClick={(event) => {handleLoadList(event, idNamePair._id)}} aria-label='edit'>
+                <EditIcon style={{fontSize:'12pt', float: 'left'}} />
+                Edit
+            </IconButton>
+        </Box>
+    if (idNamePair['published']){
+        if(idNamePair['owner'] !== auth.user.email){
+            H = "";
+            G = "";
+        }
+        published = 
+        <Box style={{ position: 'absolute', left: '1%', bottom: '0%', fontSize: '12pt'}}>{"published:" + idNamePair['published'] + " By:" + idNamePair['owner']}</Box>;
+    }
+
     let cardElement =
         <ListItem
             id={idNamePair._id}
@@ -64,22 +100,11 @@ function ListCard(props) {
                 backgroundColor: 'lightBlue'
             }}
         >
-                <Box sx={{ p: 0 }}>{idNamePair.name}</Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton disabled={store.currentList} style={{position: 'absolute', left: '0%', bottom: '0%', fontSize: '12pt'}} onClick={(event) => {handleLoadList(event, idNamePair._id)}} aria-label='edit'>
-                        <EditIcon style={{fontSize:'12pt', float: 'left'}} />
-                        Edit
-                    </IconButton>
-                </Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton style={{ right: '-5150%'}} disabled={store.currentList} onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
-                    }} aria-label='delete'>
-                        <DeleteIcon style={{fontSize:'18pt', position: 'absolute', top: '-100%'}} />
-                    </IconButton>
-                </Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton style={{ right: '-4950%'}} disabled={store.currentList} onClick={(event) => {
+                <Box sx={{ p: 0, alignSelf:'flex-start', flex: 1 }}>{idNamePair.name}</Box>
+                {published}
+                {H}
+                <Box sx={{ p: 0 }}>
+                    <IconButton style={{ width: '100%', alignSelf: 'flex-end', left: '-100%' }} disabled={store.currentList} onClick={(event) => {
                         handleExpand(event, idNamePair._id)
                     }} aria-label='expand'>
                         <DownIcon style={{fontSize:'18pt', position: 'absolute', top: '110%'}} />
@@ -101,12 +126,7 @@ function ListCard(props) {
             }}
         >
                 <Box sx={{ p: 0 , position: 'absolute', left: '1%', top: '5%' }}>{idNamePair.name}</Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton style={{position: 'absolute', left: '0%', bottom: '0%', fontSize: '12pt'}} onClick={(event) => {handleLoadList(event, idNamePair._id)}} aria-label='edit'>
-                        <EditIcon style={{fontSize:'12pt', float: 'left'}} />
-                        Edit
-                    </IconButton>
-                </Box>
+                {published}
                 <Box sx={{ p: 0 , position: 'absolute', left: '1%', top: '15%', color: 'black', backgroundColor:'lightGreen', height: '75%', width: '50%', borderRadius: '20px' }}>
                     <div id="edit-numbering">
                         <div className="item-number"><Typography variant="h4">1.</Typography></div>
@@ -123,13 +143,7 @@ function ListCard(props) {
                         }
                     </List>
                 </Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton style={{ right: '-5650%'}} onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
-                    }} aria-label='delete'>
-                        <DeleteIcon style={{fontSize:'18pt', position: 'absolute', top: '-1050%'}} />
-                    </IconButton>
-                </Box>
+                {G}
                 <Box sx={{ p: 1 }}>
                     <IconButton style={{ right: '-5450%'}} onClick={(event) => {
                         handleExpand(event, idNamePair._id)

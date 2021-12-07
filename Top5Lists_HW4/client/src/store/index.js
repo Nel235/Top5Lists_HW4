@@ -301,6 +301,16 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    store.publishCurrentList = async function () {
+        const response = await api.publishTop5ListById(store.currentList._id, store.currentList);
+        if (response.data.success) {
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_LIST,
+                payload: store.currentList
+            });
+        }
+    }
+
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A NAME
     store.setIsEditActive = function () {
         storeReducer({

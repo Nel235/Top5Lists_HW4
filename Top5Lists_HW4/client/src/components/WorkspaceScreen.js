@@ -16,6 +16,7 @@ function WorkspaceScreen() {
     const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState(store.currentList.name);
+    const [published, setPublished] = useState(!!(store.currentList.datePublished));
 
     function handleToggleEdit(event) {
         event.stopPropagation();
@@ -24,6 +25,11 @@ function WorkspaceScreen() {
 
     function handleClose(){
         store.closeCurrentList();
+    }
+
+    function handlePublish(){
+        setPublished(true);
+        store.publishCurrentList();
     }
 
     function toggleEdit() {
@@ -74,6 +80,9 @@ function WorkspaceScreen() {
             </Box>
             <Button onClick={handleClose} sx={{p: 0, fontSize:'24px', position:'absolute', color: 'black', width: '10%', left: '85%', backgroundColor: 'whitesmoke'}}>
                 Save
+            </Button>
+            <Button disabled={published} onClick={handlePublish} sx={{p: 0, fontSize:'24px', position:'absolute', color: 'black', width: '12%', left: '70%', backgroundColor: 'whitesmoke'}}>
+                Publish
             </Button>
             </div>;
     if (editActive) {
